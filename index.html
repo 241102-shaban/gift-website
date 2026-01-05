@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday, My Love!</title>
+    <style>
+        /* --- CSS STYLES --- */
+        :root {
+            --primary-color: #ff4d6d;
+            --bg-color: #0f0c29;
+            --bg-gradient: linear-gradient(to right, #24243e, #302b63, #0f0c29);
+            --text-color: #fff;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-gradient);
+            color: var(--text-color);
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        /* Container for the main content */
+        .container {
+            position: relative;
+            z-index: 10;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: 0 0 30px rgba(255, 77, 109, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            max-width: 90%;
+            width: 500px;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 10px var(--primary-color);
+        }
+
+        /* The hidden message area */
+        .message-box {
+            display: none; /* Hidden initially */
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin-top: 20px;
+            opacity: 0;
+            transition: opacity 1s ease-in;
+        }
+
+        /* Interactive Button */
+        .btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(255, 77, 109, 0.6);
+            transition: transform 0.3s, box-shadow 0.3s;
+            margin-top: 20px;
+            animation: pulse 2s infinite;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 40px rgba(255, 77, 109, 1);
+        }
+
+        /* Animations */
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 77, 109, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(255, 77, 109, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 77, 109, 0); }
+        }
+
+        /* Floating Hearts Background */
+        .heart {
+            position: absolute;
+            bottom: -100px;
+            background-color: var(--primary-color);
+            width: 20px;
+            height: 20px;
+            transform: rotate(45deg);
+            animation: float 10s linear infinite;
+            opacity: 0.6;
+            z-index: 1;
+        }
+        
+        .heart::before, .heart::after {
+            content: "";
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: var(--primary-color);
+            border-radius: 50%;
+        }
+        .heart::before { top: -10px; left: 0; }
+        .heart::after { left: -10px; top: 0; }
+
+        @keyframes float {
+            0% { transform: translateY(0) rotate(45deg); opacity: 0; }
+            20% { opacity: 0.8; }
+            100% { transform: translateY(-120vh) rotate(45deg); opacity: 0; }
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 600px) {
+            h1 { font-size: 2rem; }
+            .container { padding: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="hearts-container"></div>
+
+    <div class="container">
+        <h1 id="title">For Aaliza</h1>
+        <p>I made something special just for you.</p>
+        
+        <button class="btn" onclick="revealSurprise()">Click to Open Gift 🎁</button>
+
+        <div class="message-box" id="message">
+            </div>
+
+        </div>
+
+    <script>
+        /* --- JAVASCRIPT LOGIC --- */
+
+        // 1. Create Floating Hearts
+        function createHearts() {
+            const container = document.getElementById('hearts-container');
+            const heartCount = 30; // Number of hearts
+
+            for (let i = 0; i < heartCount; i++) {
+                const heart = document.createElement('div');
+                heart.classList.add('heart');
+                
+                // Randomize position and animation speed
+                heart.style.left = Math.random() * 100 + "vw";
+                heart.style.animationDuration = Math.random() * 3 + 7 + "s"; // 7-10s
+                heart.style.animationDelay = Math.random() * 5 + "s";
+                
+                // Randomize size
+                const size = Math.random() * 10 + 10; // 10px to 20px
+                heart.style.width = size + "px";
+                heart.style.height = size + "px";
+                heart.style.setProperty('--primary-color', Math.random() > 0.5 ? '#ff4d6d' : '#ff758c'); // Varied shades
+
+                // Pseudo-elements size fix for dynamic sizing
+                const styleSheet = document.createElement("style");
+                styleSheet.innerText = `
+                    .heart[style*="width: ${size}px"]::before, 
+                    .heart[style*="width: ${size}px"]::after {
+                        width: ${size}px; height: ${size}px;
+                    }
+                    .heart[style*="width: ${size}px"]::before { top: -${size/2}px; }
+                    .heart[style*="width: ${size}px"]::after { left: -${size/2}px; }
+                `;
+                document.head.appendChild(styleSheet);
+
+                container.appendChild(heart);
+            }
+        }
+
+        // 2. Reveal Surprise Function
+        function revealSurprise() {
+            const btn = document.querySelector('.btn');
+            const title = document.getElementById('title');
+            const messageBox = document.getElementById('message');
+            
+            // Hide button and change title
+            btn.style.display = 'none';
+            title.innerHTML = "Happy Birthday! 🎉";
+            
+            // Show message box
+            messageBox.style.display = 'block';
+            
+            // Small delay to allow display:block to apply before opacity transition
+            setTimeout(() => {
+                messageBox.style.opacity = '1';
+                typeWriter();
+            }, 100);
+
+            // Play music if configured
+            // document.getElementById('bg-music').play();
+        }
+
+        // 3. Typewriter Effect for the Message
+        const text = "To the most amazing person in the world...\n\nEvery moment with you is magical. I hope your day is as beautiful and special as you are. \n\nHere's to another year of laughing together, making memories, and being happy. I love you so much meri moti❤️";
+        
+        let i = 0;
+        function typeWriter() {
+            if (i < text.length) {
+                const char = text.charAt(i);
+                document.getElementById("message").innerHTML += char === '\n' ? '<br>' : char;
+                i++;
+                setTimeout(typeWriter, 50); // Speed of typing
+            }
+        }
+
+        // Initialize hearts on load
+        createHearts();
+    </script>
+</body>
+</html>
